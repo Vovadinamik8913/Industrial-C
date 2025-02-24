@@ -11,37 +11,34 @@
  * @return compressed input or empty
  */
 libcompressor_Buffer z_compress(libcompressor_Buffer input) {
-  libcompressor_Buffer res = {NULL, 0};
-  res.data = (char*)std::malloc(input.size + 1024);
+  libcompressor_Buffer result_buffer = {NULL, 0};
+
+  result_buffer.data = (char*)malloc(input.size + 1024);
   z_stream data;
   data.zalloc = Z_NULL;
   data.zfree = Z_NULL;
   data.opaque = Z_NULL;
-
+  
   if (deflateInit(&data, Z_DEFAULT_COMPRESSION) != Z_OK) {
-    free(res.data);
-    res.data = NULL;
-    res.size = 0;
-    return res;
+      result_buffer.data = NULL;
+      result_buffer.size = 0;
+      return result_buffer;
   }
-
+  result_buffer.size = deflateBound(&data, input.size);
+  
   data.avail_in = input.size;
   data.next_in = (Bytef*)input.data;
-  data.avail_out = res.size;
-  data.next_out = (Bytef*)res.data;
-
+  data.avail_out = result_buffer.size;
+  data.next_out = (Bytef*)result_buffer.data;
   if (deflate(&data, Z_FINISH) != Z_STREAM_END) {
-    free(res.data);
-    deflateEnd(&data);
-    res.size = 0;
-    res.data = NULL;
-    return res;
+      free(result_buffer.data);
+      deflateEnd(&data);
+      result_buffer.size = 0;
+      return result_buffer;
   }
-
-  fprintf(stderr, "Failed to compress data 4\n");
-  res.size = data.total_out;
+  result_buffer.size = data.total_out;
   deflateEnd(&data);
-  return res;
+  return result_buffer;
 }
 
 /**

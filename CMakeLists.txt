@@ -5,11 +5,9 @@ find_package(ZLIB REQUIRED)
 find_package(BZip2 REQUIRED)
 find_package(fmt REQUIRED)
 
-set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_C_COMPILER "/usr/bin/clang")
 set(CMAKE_CXX_COMPILER "/usr/bin/clang++")
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_CXX_EXTENSIONS OFF)
+set(BUILD_TESTS ON)
 
 find_package(Doxygen REQUIRED)
 if(Doxygen_FOUND)
@@ -25,6 +23,13 @@ if(Doxygen_FOUND)
         COMMENT "Generating API documentation"
     )
 endif()
+
+add_compile_options(-Wall -Wextra -Wpedantic -Werror)
+
+set_property(GLOBAL PROPERTY CXX_STANDARD 20)
+set_property(GLOBAL PROPERTY CXX_STANDARD_REQUIRED ON)
+set_property(GLOBAL PROPERTY CXX_EXTENSIONS OFF)
+set_property(GLOBAL PROPERTY POSITION_INDEPENDENT_CODE ON)
 
 add_subdirectory(libcompressor)
 add_subdirectory(compressor)
@@ -61,8 +66,6 @@ else()
 endif()
 
 
-option(BUILD_TESTS "Build tests" ON)
-if(BUILD_TESTS)
+if(${BUILD_TESTS})
     enable_testing()
-    add_subdirectory(libcompressor/tests)
 endif()

@@ -1,3 +1,5 @@
+set(LIBRARYABC libcompressor)
+
 add_library(libcompressor STATIC
     src/libcompressor.cpp
     include/libcompressor/libcompressor.hpp
@@ -16,12 +18,7 @@ target_link_libraries(libcompressor
         BZip2::BZip2
 )
 
-target_compile_options(libcompressor PRIVATE 
-    -Wall -Wextra -Wpedantic -Werror
-)
-
-set_target_properties(libcompressor PROPERTIES
-    CXX_STANDARD 20
-    CXX_STANDARD_REQUIRED ON
-    POSITION_INDEPENDENT_CODE ON
-)
+if(${BUILD_TESTS})
+    enable_testing()
+    add_subdirectory(tests)
+endif()

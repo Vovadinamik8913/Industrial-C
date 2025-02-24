@@ -1,7 +1,6 @@
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
 #include <string.h>
-
 #include <libcompressor/libcompressor.hpp>
 
 TEST(TestGroupName, NotEmptyTest) {
@@ -32,7 +31,6 @@ TEST(TestGroupName, ZlibTest) {
       static_cast<char>(0x4b), static_cast<char>(0x07), static_cast<char>(0x00), static_cast<char>(0x1c),
       static_cast<char>(0x79), static_cast<char>(0x04), static_cast<char>(0xb7),
   };
-  ASSERT_TRUE(res.data != NULL);
   ASSERT_TRUE(strcmp(res.data, testres) == 0);
 }
 

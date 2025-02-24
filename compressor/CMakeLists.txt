@@ -13,11 +13,3 @@ target_link_libraries(compressor
         libcompressor
         fmt::fmt
 )
-
-target_compile_options(compressor PRIVATE 
-    -Wall -Wextra -Wpedantic -Werror
-)
-
-if(UNIX)
-    target_link_libraries(compressor PRIVATE m)
-endif()
