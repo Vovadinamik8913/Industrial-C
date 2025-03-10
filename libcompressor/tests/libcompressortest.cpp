@@ -1,6 +1,7 @@
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
 #include <string.h>
+
 #include <libcompressor/libcompressor.hpp>
 
 TEST(TestGroupName, NotEmptyTest) {

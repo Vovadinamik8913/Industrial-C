@@ -1,5 +1,3 @@
-set(LIBRARYABC libcompressor)
-
 add_library(libcompressor STATIC
     src/libcompressor.cpp
     include/libcompressor/libcompressor.hpp
@@ -22,3 +20,9 @@ if(${BUILD_TESTS})
     enable_testing()
     add_subdirectory(tests)
 endif()
+
+install(TARGETS libcompressor
+    EXPORT LibcompressorTargets
+    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    INCLUDES DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+)

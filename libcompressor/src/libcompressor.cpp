@@ -1,5 +1,6 @@
 #include <bzlib.h>
 #include <zlib.h>
+
 #include <cstddef>
 #include <cstdlib>
 #include <libcompressor/libcompressor.hpp>
@@ -18,23 +19,23 @@ libcompressor_Buffer z_compress(libcompressor_Buffer input) {
   data.zalloc = Z_NULL;
   data.zfree = Z_NULL;
   data.opaque = Z_NULL;
-  
+
   if (deflateInit(&data, Z_DEFAULT_COMPRESSION) != Z_OK) {
-      result_buffer.data = NULL;
-      result_buffer.size = 0;
-      return result_buffer;
+    result_buffer.data = NULL;
+    result_buffer.size = 0;
+    return result_buffer;
   }
   result_buffer.size = deflateBound(&data, input.size);
-  
+
   data.avail_in = input.size;
   data.next_in = (Bytef*)input.data;
   data.avail_out = result_buffer.size;
   data.next_out = (Bytef*)result_buffer.data;
   if (deflate(&data, Z_FINISH) != Z_STREAM_END) {
-      free(result_buffer.data);
-      deflateEnd(&data);
-      result_buffer.size = 0;
-      return result_buffer;
+    free(result_buffer.data);
+    deflateEnd(&data);
+    result_buffer.size = 0;
+    return result_buffer;
   }
   result_buffer.size = data.total_out;
   deflateEnd(&data);
@@ -64,7 +65,7 @@ libcompressor_Buffer b_compress(libcompressor_Buffer input) {
 
 libcompressor_Buffer libcompressor_compress(libcompressor_CompressionAlgorithm algo, libcompressor_Buffer input) {
   libcompressor_Buffer res = {NULL, 0};
-  if (!input.data || !input.size) {
+  if (input.data == NULL || input.size == 0) {
     return res;
   }
 

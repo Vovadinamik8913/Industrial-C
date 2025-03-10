@@ -1,4 +1,5 @@
 #include <spdlog/spdlog.h>
+
 #include <cstdlib>
 #include <libcompressor/libcompressor.hpp>
 

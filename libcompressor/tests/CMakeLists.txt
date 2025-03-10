@@ -6,7 +6,7 @@ add_executable(libcompressor_tests
 
 target_link_libraries(libcompressor_tests
     PRIVATE
-        ${LIBRARYABC}
+        libcompressor
         GTest::GTest
         GTest::Main
 )
