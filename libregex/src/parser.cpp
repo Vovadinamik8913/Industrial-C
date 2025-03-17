@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <libregex/checker.hpp>
 #include <libregex/exception.hpp>
 #include <libregex/parser.hpp>
@@ -17,8 +18,8 @@ libregex::parser::parse_modifier(std::shared_ptr<libregex::regex_node> prev) {
   if (pos == 0) {
     throw regex_exception("Invalid modifier syntax");
   }
-  if (pattern[pos - 1] == '*' || pattern[pos - 1] == '?' ||
-      pattern[pos - 1] == '+') {
+  if (pattern[pos + 1] == '*' || pattern[pos + 1] == '?' ||
+      pattern[pos + 1] == '+') {
     throw regex_exception("Invalid modifier syntax");
   }
   return std::shared_ptr(
@@ -28,17 +29,26 @@ libregex::parser::parse_modifier(std::shared_ptr<libregex::regex_node> prev) {
 std::vector<char> libregex::parser::parse_group_chars() {
   std::vector<char> chars;
   while (pos < pattern.size() && pattern[pos] != ']') {
-    if (pattern[pos] == '-') {
+    if (pattern[pos] == '-' || !checker::pattern_allowed(pattern[pos])) {
       throw regex_exception("Invalid group syntax");
     }
     if (pos + 1 < pattern.size() && pattern[pos + 1] == '-') {
-      if (pos + 2 >= pattern.size())
+      if (pos + 2 >= pattern.size() ||
+          !checker::pattern_allowed(pattern[pos + 2]) ||
+          pattern[pos + 2] == '-') {
         throw regex_exception("Invalid range");
+      }
       for (char c = pattern[pos]; c <= pattern[pos + 2]; ++c) {
+        if (std::find(chars.begin(), chars.end(), c) != chars.end()) {
+          throw regex_exception("2Invalid group syntax");
+        }
         chars.push_back(c);
       }
       pos += 3;
     } else {
+      if (std::find(chars.begin(), chars.end(), pattern[pos]) != chars.end()) {
+        throw regex_exception("Invalid group syntax");
+      }
       chars.push_back(pattern[pos++]);
     }
   }
@@ -50,7 +60,6 @@ std::vector<char> libregex::parser::parse_group_chars() {
 }
 
 std::shared_ptr<libregex::regex_node> libregex::parser::parse_group() {
-  ;
   return std::shared_ptr(
       std::make_shared<group_node>(group_node(parse_group_chars())));
 }
@@ -69,7 +78,6 @@ std::shared_ptr<libregex::regex_node> libregex::parser::parse() {
     } else {
       node = parse_char();
     }
-
     if (pos < pattern.size()) {
       if (pattern[pos] == '*' || pattern[pos] == '?' || pattern[pos] == '+') {
         node = parse_modifier(node);

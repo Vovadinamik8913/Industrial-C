@@ -52,17 +52,31 @@ bool libregex::group_node::match(const std::string &input, size_t &pos) const {
 
 bool libregex::modifier_node::match(const std::string &input,
                                     size_t &pos) const {
-  size_t initial_pos = pos;
-  size_t max_pos = pos;
-
-  if (modifier == '*' || modifier == '+') {
-    while (pos < input.size() && child->match(input, pos)) {
-      if (pos == max_pos)
+  size_t count = 0;
+  if (modifier == '*') {
+    while (pos < input.size()) {
+      size_t prev_pos = pos;
+      if (!child->match(input, pos)) {
         break;
-      max_pos = pos;
+      }
+      if (prev_pos == pos) {
+        break;
+      }
+      count++;
     }
-    pos = max_pos;
-    return modifier == '*' || max_pos > initial_pos;
+    return true;
+  } else if (modifier == '+') {
+    while (pos < input.size()) {
+      size_t prev_pos = pos;
+      if (!child->match(input, pos)) {
+        break;
+      }
+      if (prev_pos == pos) {
+        break;
+      }
+      count++;
+    }
+    return count > 0;
   } else if (modifier == '?') {
     child->match(input, pos);
     return true;

@@ -6,6 +6,7 @@
 int main(int argc, char **argv) {
   if (argc < 2) {
     std::cerr << "not enough arguments" << std::endl;
+    exit(EXIT_FAILURE);
   }
 
   std::string regexp(argv[1]);
@@ -23,7 +24,9 @@ int main(int argc, char **argv) {
         std::cout << false << std::endl;
       }
     }
-  } catch (const libregex::regex_exception &e) {
+  } catch (const libregex::regex_exception e) {
     std::cerr << e.what() << std::endl;
+    exit(EXIT_FAILURE);
   }
+  exit(EXIT_SUCCESS);
 }
