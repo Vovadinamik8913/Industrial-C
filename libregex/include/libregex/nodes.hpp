@@ -6,6 +6,7 @@
 namespace libregex {
 /// @brief abstract node of regexp
 class regex_node {
+ protected:
   std::shared_ptr<regex_node> next;
 
  public:
@@ -15,7 +16,7 @@ class regex_node {
   std::shared_ptr<regex_node> get_next();
   /// @brief set next
   /// @param next next node
-  void set_next(std::shared_ptr<regex_node> next);
+  void set_next(const std::shared_ptr<regex_node> &next);
   virtual ~regex_node() = default;
   /// @brief match symbol to node
   /// @param  string string to match
@@ -54,7 +55,7 @@ class modifier_node : public regex_node {
   char modifier;
 
  public:
-  explicit modifier_node(std::shared_ptr<regex_node> child, char mod)
+  explicit modifier_node(const std::shared_ptr<regex_node> &child, char mod)
       : child(child), modifier(mod) {}
   bool match(const std::string &, size_t &) const override;
 };

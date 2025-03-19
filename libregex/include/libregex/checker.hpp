@@ -1,21 +1,14 @@
 #pragma once
+#include <string_view>
 #include <vector>
 
 namespace libregex {
 /// @brief class for cecking allowed symbols in pattern and input
 class checker {
-  /**
-   * @brief Get the allowed chars object
-   *
-   * @return allowed chars
-   */
-  static const std::vector<char> &get_allowed_chars();
-  /**
-   * @brief generate allowed chars
-   *
-   * @return allowed char
-   */
-  static std::vector<char> generate_allowed_chars();
+  /// @brief allowed symbols
+  static const std::string_view allowed_chars;
+  /// @brief allowed symbols for pattern
+  static const std::string_view pattern_allowed_chars;
 
  public:
   /**

@@ -73,6 +73,12 @@ TEST(MatcherTest, QuestuionTrueTest) {
   ASSERT_TRUE(matcher.full_match("a"));
 }
 
+TEST(MatcherTest, QuestuionLazyTrueTest) {
+  libregex::parser parser("a?a");
+  libregex::matcher matcher(parser.parse());
+  ASSERT_TRUE(matcher.full_match("a"));
+}
+
 TEST(MatcherTest, QuestionEmptyTest) {
   libregex::parser parser("a?");
   libregex::matcher matcher(parser.parse());

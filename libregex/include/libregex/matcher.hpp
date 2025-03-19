@@ -1,5 +1,6 @@
 #pragma once
 #include <libregex/nodes.hpp>
+#include <memory>
 
 namespace libregex {
 /// @brief class for mathcing strings
@@ -10,10 +11,10 @@ class matcher {
  public:
   /// @brief init matcher ast
   /// @param head ast start
-  explicit matcher(std::shared_ptr<regex_node> head) : ast{head} {}
+  explicit matcher(std::shared_ptr<regex_node> head) : ast{std::move(head)} {}
   /// @brief is word matching pattern
   /// @param  string input
   /// @return true or false
-  bool full_match(const std::string &);
+  bool full_match(const std::string & /* input */);
 };
 } // namespace libregex

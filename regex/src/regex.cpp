@@ -6,7 +6,7 @@
 int main(int argc, char **argv) {
   if (argc < 2) {
     std::cerr << "not enough arguments" << std::endl;
-    exit(EXIT_FAILURE);
+    return EXIT_FAILURE;
   }
 
   std::string regexp(argv[1]);
@@ -18,15 +18,15 @@ int main(int argc, char **argv) {
       std::getline(std::cin, check);
       try {
         bool res = match_system.full_match(check);
-        std::cout << res << std::endl;
+        std::cout << (res ? "true" : "false") << std::endl;
       } catch (const libregex::regex_exception &e) {
         std::cerr << e.what() << std::endl;
-        std::cout << false << std::endl;
+        std::cout << "false" << std::endl;
       }
     }
   } catch (const libregex::regex_exception e) {
     std::cerr << e.what() << std::endl;
-    exit(EXIT_FAILURE);
+    return EXIT_FAILURE;
   }
-  exit(EXIT_SUCCESS);
+  return EXIT_SUCCESS;
 }

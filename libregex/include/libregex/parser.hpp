@@ -1,5 +1,7 @@
 #pragma once
 #include <libregex/nodes.hpp>
+#include <memory>
+#include <string>
 #include <vector>
 
 namespace libregex {
@@ -13,7 +15,8 @@ class parser {
   /// @brief parse (*, ?, +)
   /// @param prev previous node to modify
   /// @return modifier_node
-  std::shared_ptr<regex_node> parse_modifier(std::shared_ptr<regex_node> prev);
+  std::shared_ptr<regex_node>
+  parse_modifier(const std::shared_ptr<regex_node> &prev);
   /// @brief parsing ([abc], [a-g])
   /// @return group_node
   std::shared_ptr<regex_node> parse_group();

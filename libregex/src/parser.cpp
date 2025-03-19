@@ -7,14 +7,17 @@
 std::shared_ptr<libregex::regex_node> libregex::parser::parse_char() {
   if (pattern[pos] == '.') {
     pos++;
-    return std::shared_ptr(std::make_shared<dot_node>(dot_node()));
+    return std::make_shared<dot_node>(dot_node());
   }
-  return std::shared_ptr(
-      std::make_shared<char_node>(char_node(pattern[pos++])));
+  if (!checker::allowed(pattern[pos])) {
+    throw regex_exception("Invalid pattern syntax");
+  }
+
+  return std::make_shared<char_node>(char_node(pattern[pos++]));
 }
 
-std::shared_ptr<libregex::regex_node>
-libregex::parser::parse_modifier(std::shared_ptr<libregex::regex_node> prev) {
+std::shared_ptr<libregex::regex_node> libregex::parser::parse_modifier(
+    const std::shared_ptr<libregex::regex_node> &prev) {
   if (pos == 0) {
     throw regex_exception("Invalid modifier syntax");
   }
@@ -22,8 +25,7 @@ libregex::parser::parse_modifier(std::shared_ptr<libregex::regex_node> prev) {
       pattern[pos + 1] == '+') {
     throw regex_exception("Invalid modifier syntax");
   }
-  return std::shared_ptr(
-      std::make_shared<modifier_node>(modifier_node(prev, pattern[pos++])));
+  return std::make_shared<modifier_node>(modifier_node(prev, pattern[pos++]));
 }
 
 std::vector<char> libregex::parser::parse_group_chars() {
@@ -40,14 +42,15 @@ std::vector<char> libregex::parser::parse_group_chars() {
       }
       for (char c = pattern[pos]; c <= pattern[pos + 2]; ++c) {
         if (std::find(chars.begin(), chars.end(), c) != chars.end()) {
-          throw regex_exception("2Invalid group syntax");
+          continue;
         }
         chars.push_back(c);
       }
       pos += 3;
     } else {
       if (std::find(chars.begin(), chars.end(), pattern[pos]) != chars.end()) {
-        throw regex_exception("Invalid group syntax");
+        pos++;
+        continue;
       }
       chars.push_back(pattern[pos++]);
     }
@@ -60,8 +63,7 @@ std::vector<char> libregex::parser::parse_group_chars() {
 }
 
 std::shared_ptr<libregex::regex_node> libregex::parser::parse_group() {
-  return std::shared_ptr(
-      std::make_shared<group_node>(group_node(parse_group_chars())));
+  return std::make_shared<group_node>(group_node(parse_group_chars()));
 }
 
 std::shared_ptr<libregex::regex_node> libregex::parser::parse() {
@@ -89,10 +91,10 @@ std::shared_ptr<libregex::regex_node> libregex::parser::parse() {
       tail = node;
     } else {
       if (head == tail) {
-        (*head).set_next(node);
+        head->set_next(node);
         tail = node;
       } else {
-        (*tail).set_next(node);
+        tail->set_next(node);
         tail = node;
       }
     }
