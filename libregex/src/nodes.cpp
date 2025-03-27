@@ -67,15 +67,25 @@ bool libregex::modifier_node::match(const std::string &input,
     }
     return count > 0;
   } else if (modifier == '?') {
+    if (pos >= input.size()) {
+      return true;
+    }
+    size_t saved_pos = pos;
+    if (child->match(input, pos)) {
+      if (next == nullptr) {
+        return true;
+      }
+      size_t next_pos = pos;
+      if (next->match(input, next_pos)) {
+        return true;
+      }
+      pos = saved_pos;
+    }
+    saved_pos = pos;
     if (next != nullptr && next->match(input, pos)) {
-      pos--;
+      pos = saved_pos;
       return true;
     }
-    if (pos == input.size()) {
-      return true;
-    }
-
-    return child->match(input, pos);
   }
   return false;
 }
