@@ -1,5 +1,4 @@
 #include <iostream>
-#include <libregex/exception.hpp>
 #include <libregex/matcher.hpp>
 #include <libregex/parser.hpp>
 
@@ -19,12 +18,12 @@ int main(int argc, char **argv) {
       try {
         bool res = match_system.full_match(check);
         std::cout << (res ? "true" : "false") << std::endl;
-      } catch (const libregex::regex_exception &e) {
+      } catch (const std::runtime_error &e) {
         std::cerr << e.what() << std::endl;
         std::cout << "false" << std::endl;
       }
     }
-  } catch (const libregex::regex_exception e) {
+  } catch (const std::runtime_error e) {
     std::cerr << e.what() << std::endl;
     return EXIT_FAILURE;
   }

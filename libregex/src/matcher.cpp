@@ -1,4 +1,3 @@
-#include <libregex/exception.hpp>
 #include <libregex/matcher.hpp>
 
 bool libregex::matcher::full_match(const std::string &input) {
